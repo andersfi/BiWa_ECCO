@@ -43,6 +43,7 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   temppred <- predict(lm(abs_TOC~year,data=tempdata),newdata=list(year=c(1986,2013)))
   sen.data$percTOC[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$abs_TOC,na.rm=T))*100
   sen.data$absTOC[i] <- temppred[2] - temppred[1]
+  sen.data$bTOC[i] <- coef(lm(log(abs_TOC)~year,data=tempdata, na.action = na.omit))[2]
   
   #lnTOC  
   rkt.out.temp <- rkt(date=tempdata$year, y=tempdata$lnTOC)
@@ -57,6 +58,7 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   temppred <- predict(lm(abs_ndvi.summer~year,data=tempdata),newdata=list(year=c(1986,2013)))
   sen.data$perc.ndvi.summer[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$abs_ndvi.summer,na.rm=T))*100
   sen.data$abs.ndvi.summer[i] <- temppred[2] - temppred[1]
+  sen.data$bNDVI[i] <- coef(lm(log(abs_ndvi.summer)~year,data=tempdata, na.action = na.omit))[2]
   
   # sdep
   rkt.out.temp <- rkt(date=tempdata$year,y=tempdata$sdep_pred)
@@ -66,6 +68,7 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   temppred <- predict(lm(abs_sdep~year,data=tempdata),newdata=list(year=c(1986,2013)))
   sen.data$perc.sdep[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$abs_sdep,na.rm=T))*100
   sen.data$abs.sdep[i] <- temppred[2] - temppred[1]
+  sen.data$bSdep[i] <- coef(lm(log(abs_sdep)~year,data=tempdata, na.action = na.omit))[2]
   
   # SO4
   rkt.out.temp <- rkt(date=tempdata$year, y=tempdata$SO4)
@@ -75,6 +78,7 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   temppred <- predict(lm(abs_SO4~year,data=tempdata),newdata=list(year=c(1986,2013)))
   sen.data$perc.SO4[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$abs_SO4,na.rm=T))*100
   sen.data$abs.SO4[i] <- temppred[2] - temppred[1]
+  sen.data$bSO4[i] <- coef(lm(log(abs_SO4)~year,data=tempdata, na.action = na.omit))[2]
   
   # Cl
   rkt.out.temp <- rkt(date=tempdata$year, y=tempdata$Cl)
@@ -83,6 +87,7 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   temppred <- predict(lm(abs_Cl~year,data=tempdata),newdata=list(year=c(1986,2013)))
   sen.data$perc.Cl[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$abs_Cl,na.rm=T))*100
   sen.data$abs.Cl[i] <- temppred[2] - temppred[1]
+  sen.data$bCl[i] <- coef(lm(log(abs_Cl)~year,data=tempdata, na.action = na.omit))[2]
   
   # q.summer
   rkt.out.temp <- rkt(date=tempdata$year, y=tempdata$q.summer)
@@ -92,6 +97,7 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   temppred <- predict(lm(abs_q.summer~year,data=tempdata),newdata=list(year=c(1986,2013)))
   sen.data$perc.q.summer[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$abs_q.summer,na.rm=T))*100
   sen.data$abs.q.summer[i] <- temppred[2] - temppred[1]
+  sen.data$bQsummer[i] <- coef(lm(log(abs_q.summer)~year,data=tempdata, na.action = na.omit))[2]
   
   # tm.summer
   rkt.out.temp <- rkt(date=tempdata$year, y=tempdata$tm.summer)
@@ -101,6 +107,8 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   temppred <- predict(lm(abs_tm.summer~year,data=tempdata),newdata=list(year=c(1986,2013)))
   sen.data$perc.tm.summer[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$abs_tm.summer,na.rm=T))*100
   sen.data$abs.tm.summer[i] <- temppred[2] - temppred[1]
+  sen.data$bTMsummer[i] <- coef(lm(log(abs_tm.summer)~year,data=tempdata, na.action = na.omit))[2]
+  
 }
 
 coordinates <- read.table("S5_position_of_lakes_inLatLong_WGS84.txt",header=T)
