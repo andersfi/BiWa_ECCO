@@ -1,0 +1,607 @@
+---
+title: "Supplementary information to 'From greening to browning: Catchment vegetation development and reduced S-deposition promote lake organic carbon load on decadal time scales'"
+author: "Anders G. Finstad, Tom Andersen, Søren Larsen, Koji Tominaga, Stefan Blumentrath, Heelen A. de Wit, Hans Tømmervik, Dag Olav Hessen'"
+date: ""
+output: word_document
+---
+
+```{r,warning=FALSE,message=FALSE,echo=F,results='hide'}
+working_dir <- "C:\\Users\\andersfi\\Dropbox\\a_fishing\\biwa_ecco\\toc\\RcodeAndData"
+setwd(working_dir)
+tabbs <- c(1:50)
+figgs <- c(1:50)
+
+```
+
+***
+
+Supplementary material contains contains four parts: 
+
+A) Notes on methodological differences compared to pre-sequel studies
+
+B) Additional sampling site and source data description 
+
+C) Extended output and additional analyses, including residual plots for the mixed effect modelling 
+
+D) Additional analyses and residual plots for supplementary trend analyse (using regression slopes as modell inputt for correspondence with previous studies) 
+
+***
+
+# A) Notes on methodological differences compared to pre-sequel studies
+The current study builds upon previous studies demonstrating increases in DOC of boreal lakes and rivers (de Wit et al. 2007, Monteith et al. 2007). These studies have used concentrations of SO4 analyzed from water same samples as proxy for Sulphur deposition. Here, we use atmospheric Sulphur deposition directly as input variable. The rationale for this is that SO4 in water partly is controlled by the same drivers as TOC (hydrology not the least), which could induce spurious correlations. Climate, and notably hydrology, will affect oxidation and mobilization of Sulphur in soils and bogs that also contribute to SO4 in recipient waters (Hongve et al. 2004), implying that there, at least on annual scales, will be deviations between input and output of SO4 from catchments. Deposition of SO4 is, however, calculated by interpolating data from a number of monitoring stations (see below), while SO4 in water is measured with high accuracy. 
+Secondly, previous studies are mainly based upon correlations between observed trend metrics (slopes) of TOC and driver variables over time. We here apply a regression-based model with yearly mean values as input. Additionally, we used ln TOC as dependent variable, where the anti-log of the regression coefficients can be interpreted as relative change from one year to the next. Utilizing individual data-points furthermore increase the statistical power of the analyses and enables inspections of time-lags. We provide a replication of the analyses using trend metrics (slopes) in the supplementary material. Although trend metrics still provide a significant effect of vegetation, the relative importance of vegetation is here less due to the inherent between year variation climate variation induce in vegetation measures. The long term trends of climate on vegetation proxies hence become weaker than the relatively linear decrease in Sulphur deposition experienced throughout the last decades.  
+
+
+# B) Additional sampling site and source data description
+
+### Lake chemistry data
+The data in this analysis are obtained from a Norwegian lake monitoring program from 78 lakes covering the Norway mainland and with annual samples from 1986 to 2013. These lakes constitutes a subset of the 1000-lake acidification survey of 1995 (*Henriksen et al. 1998,  Ambio 27:80-91*), and represents acid sensitive, headwater lakes on granitic or gneissic bedrock with negligible local pollution sources. Water samples are collected annually at the outlet after the autumn circulation period and where analysed at the Norwegian Institute of Water Research  (*Skjelkvåle et al. 2001,Hydrol. Earth Syst. Sci. 5:327-338*).  
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`: List of study sites (lakes) included in the present study.** The table is given with lakeID corresponding to the official lake numbering given by the Norwegian Water Resources and Energy Directorate, http://www.nve.no/en/, latitude and longitude (EPSG:4326) of lake centroid, lake area (square kilometers), catchment area (square kilometres) and mean lake TOC.
+
+```{r sitetable, echo=F,format = 'markdown'}
+library(knitr)
+setwd(working_dir)
+source("listOfLakes_table.r")
+kable(listOfLakes)
+
+```
+
+
+### Environmental drivers
+Lake catchments where delineated from a 10m digital terrain model (obtained from The Norwegian Mapping Authority). Time series of annual mean catchment vegetation biomass/productivity (NDVI), runoff, temperature and sulphur deposition where then extracted using the raster library (*Hijmans 2015, raster: Geographic Data Analysis and Modeling. R package version 2.4-15*) in R v. 3.2.1 (*R Core Team 2015, R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL http://www.R-project.org/*).
+
+We used NDVI (Normalized Difference Vegetation Index; GIMMS NDVI3g) as proxy for catchment vegetation biomass/productivity (*Fensholt and Proud 2012, Remote Sensing of Environment 119:131-147; Pinzon and Tucker 2014, Remote Sensing 6:6929-6960*). The NDVI is a radiometric measurement of the fraction of photosynthetically active radiation (~ 400 to 700 nm) absorbed by chlorophyll in the leaves of a vegetation canopy (*Myneni et al. 1995, Trans. Geosci. Rem. Sens. 33:481-486*). Although care should be taken before interpreting NDVI changes directly as net changes in primary production, the index has previously proven a good surrogate of photosynthetic activity and for capturing long-term changes in vegetation (*Myneni et al. 1997, Nature 386:698-702; Forkel et al. 2013, Remote Sensing 5:2113-2144*). The NDVI3g data set has a pixel resolution of 8 x 8 km. The maximum NDVI value over a 15-day period is used to represent each 15-day interval to minimize bias due to cloud contamination and variations in atmospheric turbidity, scan angle, and solar zenith angle (*Holben 1986, Int. J. Rem. Sens. 7:1417-1434; Pinzon and Tucker 2014, Remote Sensing 6:6929-6960*). This scheme results in two maximum-value NDVI composites per month. Here, we used the mean NDVI3g record for the main snow free period (June - August) averaged annually from 1982 to 2011 and over each catchment area. Other measurements, such as maximum yearly NDVI3g and June - August maxima gave similar results in terms of temporal dynamics, and were therefore not included in further analyses. 
+
+Time series of temperature and runoff for individual catchment were extracted using gridded data from 1980 to 2013 (1 km2 resolution from the Norwegian Meteorological Institute and the Norwegian Water Resources and Energy Directorate (*Mohr 2008, New Routines for Gridding of Temperature and Precipitation Observations for http://www.seNorge.no*). The original data with a daily resolution were aggregated to June to August means for individual catchments, corresponding to the NDVI time series. 
+
+Time series of S deposition at the catchment level was interpolated from EMEP deposition raster temporal composite (1980, 1985, 1990, and annually from 1995 to 2011) (*Schulz et al. 2013, Transboundary acidification, eutrophication and ground level ozone in Europe in 2011. Norwegian Meteorological Institute*) using recalculations if available. Total S deposition was used in the present study, comprising both dry and wet deposition. Each type of deposition was modelled using regression kriging using EMEP precipitation as a linear regression model predictor, with residuals fitted using a linear variogram model with no nugget. Using the variogram model and linear model, deposition flux over the catchment area was predicted using block kriging with the target geometry being the catchment polygon. Missing values from 1985-1990 and 1990-1995 where estimated within each catchment using loess regression. 
+
+
+# C) Extended output and additional analyses
+
+### Data standardization and software
+All pre-processing and analyses was done in R v. 3.2.1 (*R Core Team 2015*). Prior to the analyses, TOC where log transformed, and the data where standardized by detracting mean and dividing on standard deviation using the scale function of the *base* library. 
+
+We first tested for overall temporal trends in the time series of lake TOC and each of the  catchment drivers using a regional Kendall trend test using the rkt library (*Marchetto 2015, rkt: Mann-Kendall Test, Seasonal and Regional Kendall Tests*). Each individual lake was used as block (*Helsel and Frans 2006, Env. Sci. Tech. 40:4066-4073*). 
+
+To test for effects of vegetation development (NDVI) after correcting for other known drivers of TOC, we included effects of mean yearly S deposition, catchment NDVI, runoff, and air temperature as driver variables in a linear mixed effect model with lake TOC as dependent variable using the nlme library (*Pinheiro et al. 2012, nlme: Linear and Nonlinear Mixed Effects Models. R package version 3.1-104*). Year was included in the full model as a controlling variable (*Freckleton 2002, J. Anim. Ecol. 71:542-545*). Selection of random structure where done on a full fixed model structure (fitted by REML) by model comparison (*Zuur et al. 2009, Mixed effects models and extensions in ecology with R. Springer, New York*). This resulted in a full model including lake-ID as random intercept and year nested within lake-ID as random slope (???AIC > -76.65 in favor of the selected random structure). By introducing lake ID as random factor, we model between-lake variation in TOC caused by catchment variables not considered in the current study. For example static land cover properties that not are expected to change on the investigated time frame such as bogs and wetlands, catchment size, lake size. Temporal autocorrelation (AR1) was initially also tried, by entering year nested within lake-ID, but proved redundant in the initial selection of the random structure. There was no signs of multicollinearity (variance inflation factors, all VIF < 1.96, (Zuur et al. 2009) and maximum correlation between predictors where -0.61. 
+
+Catchment vegetation is expected to influence lake TOC with time lags (see main text). Due to catchment-specific properties such as fractions of alpine areas, forests and bogs, as well as inter-annual variability in climate and runoff, the time-lag between terrestrially fixed C (inferred as NDVI) and export of TOC may vary substantially. Based on visual inspection of cross-correlation plots between the dependent variable (TOC) and time lags of the explanatory variables, it was apparent that NDVI and runoff affected lake TOC with a considerable time lag. In comparison, there were no clear time-lags in the effect of S deposition or temperature. 
+
+```{r,listoflakes, warning=FALSE,message=FALSE,echo=F,fig.height=5, fig.width=5}
+setwd(working_dir)
+source("data_standarization.r")
+source("time_lags.r")
+par(mfrow=c(2,2))
+scatter.smooth(ndvi.cor.agg$lag[ndvi.cor.agg$lag<1], 
+               ndvi.cor.agg$acf[ndvi.cor.agg$lag<1], 
+               xlab="Lag",
+               ylab="ccf"
+               ,span = 0.25,
+               col = "green",
+               pch = 19,main="NDVI-TOC ccf",xlim=c(-15,0))
+
+
+scatter.smooth(cor.agg.sdep$lag[cor.agg.sdep$lag<1], 
+               cor.agg.sdep$acf[cor.agg.sdep$lag<1], 
+               xlab="Lag",
+               ylab="ccf"
+               ,span = 0.25,
+               col = "blue",
+               pch = 19,main="S dep. -TOC ccf"
+)
+
+scatter.smooth(cor.agg.q.summer$lag[cor.agg.q.summer$lag<1], 
+               cor.agg.q.summer$acf[cor.agg.q.summer$lag<1], 
+               xlab="Lag",
+               ylab="acf"
+               ,span = 0.25,
+               col = "blue",
+               pch = 19,main="Q -TOC ccf")
+
+scatter.smooth(cor.agg.tm.summer$lag[cor.agg.tm.summer$lag<1], 
+               cor.agg.tm.summer$acf[cor.agg.tm.summer$lag<1], 
+               xlab="Lag",
+               ylab="ccf"
+               ,span = 0.25,
+               col = "blue",
+               pch = 19,main="Temp. - TOC ccf"
+)
+
+```
+
+**Figure S`r figgs[1]``r figgs<-figgs[2:length(figgs)]`: Inspecting for delayed response (time-lags) between drivers and response** Here, we do a visual inspection of cross-correlation plots between the dependent variable (TOC) and time lags of the explanatory variables. The correlations are given as means across all lakes, and solid line represent a loess fitted curve for illustrational purposes. 
+
+NDVI and runoff affected lake TOC a considerable time lag. In comparison, there were no clear time-lags in the effect of Sulphur deposition or temperature. In order to avoid data-dredging issues, we selected *a priori* a one year time lag for NDVI and runoff as the input for our analyses. We subsequently performed sensitivity analyses on the effect of time-lag chosen by re-running the final model with different time-lags (see below). The main predictions were mainly insensitive to choice of time-lag, and hence only 1 year time lags are presented in the results of the main text. S deposition and temperature where entered without time lags.
+
+### Model selection and multi-model inference
+Model selection and model averaging on fixed effect structure where done by model comparison using the MuMIn library (*Grueber et al. 2011, J. Evol. Biol. 24:699-711*). We compared all possible combinations of fixed factors and ranked candidate models according to the Akaike information criterion (AIC), and also calculated delta AIC ($\Delta$i) in relation to the highest ranked model, as well the Akaike Weigths (wi). There was no clear top-ranked candidate model, and we applied Akaike weigth-based averaging over the 95% confidence model set (cumulative AIC weights of models $\geqslant$ 0.95) for estimating coefficients for the candidate models as well as their 95% confidence intervals. The relative influence (RI) of each variable was given as the summation of wi across all models including that variable in the 95% confidence model set (*Johnson and Omland 2004, Trend. Ecol. Evol. 19:101-108*). 
+
+Residuals of the final selected models were visually inspected for deviations from normality, heteroscedasticity, and spatial or temporal autocorrelation without finding evidence for violation of model assumptions (see below). 
+
+To quantify the relative strength of the different catchment drivers of TOC, we included effects of mean yearly S deposition, catchment NDVI, runoff, and air temperature as driver variables in a linear mixed effect model with lake TOC as dependent variable (nlme library; Pinheiro et al. 2012). Year, was included in the full model as a controlling variable (sensu Freckleton 2002). There was no signs of multicollinearity (variance inflation factors, all VIF < 1.96, (Zuur et al. 2009) and maximum correlation between predictors where 0.61 (see figure below). 
+
+
+```{r, echo=F,warning=FALSE,message=FALSE,fig.height=5,fig.height=5}
+# testing for co-linarity in variables 
+
+TOC <-  data.std2$lnTOC 
+NDVI <- data.std2$q.summer_lag4
+Sdep <- data.std2$sdep_pred
+Tempr. <- data.std2$tm.summer
+Year <- data.std2$year
+
+# panel.cor function with compliments to Stephen Turner http://www.r-bloggers.com/scatterplot-matrices-in-r/
+panel.cor <- function(x, y, digits=2, prefix="", cex.cor, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- abs(cor(x, y))
+    txt <- format(c(r, 0.123456789), digits=digits)[1]
+    txt <- paste(prefix, txt, sep="")
+    if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+pairs(~NDVI + Sdep + Tempr.+ Year,main="Explanatory variables",upper.panel=panel.cor)
+
+````
+
+**Figure S`r figgs[1]``r figgs<-figgs[2:length(figgs)]`:Scatter plot matrix of explanatory variables included in the analyses.**
+
+
+
+**Analyses (R-code), for results as apparing in main text:**
+
+```{r, echo=T,warning=FALSE,message=FALSE}
+# comparing random structure
+library(nlme)
+library(MuMIn)
+f1 <- formula(lnTOC ~ ndvi.summer_lag1 + q.summer_lag1 + sdep_pred + tm.summer+year) 
+
+m1 <- gls(f1, data = data.std2, na.action = na.fail,method="REML") 
+m2 <- lme(f1, data = data.std2, random= ~1 | as.factor(vatn_lnr),na.action = na.fail,method="REML") 
+m3 <- lme(f1, data = data.std2, random= ~year | as.factor(vatn_lnr),na.action = na.fail,method="REML") 
+
+m4 <- lme(f1, data = data.std2, random= ~ 1 | as.factor(vatn_lnr), 
+          corAR1(form = ~ year | as.factor(vatn_lnr)),method="REML",na.action = na.fail) 
+m5 <- lme(f1, data = data.std2, random= ~ year | as.factor(vatn_lnr), 
+          corAR1(form = ~ year | as.factor(vatn_lnr)),method="REML",na.action = na.fail) 
+
+#Choosing random structure
+AIC(m1,m2,m3,m4,m5)
+
+
+# refitt model and model selection 
+m1 <- lme(f1, data = data.std2, random= ~ year | as.factor(vatn_lnr),method="ML",na.action = na.fail)  
+
+dregde_mod <- dredge(m1,rank="AIC") 
+avgmod.95p <- model.avg(dregde_mod, cumsum(weight) <= .95,fit=T)
+dregdetable <- subset(dregde_mod, cumsum(weight) <= .95)
+
+```
+
+
+<br/><br/>
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Model selection tables of TOC against NDVI, run-off (Q), S deposition, temperature and year. The tables show parameter estimates for model terms included in the models, log likelihood (LogLik), AIC, AIC difference from best model (delta), and Akaike weigths (weigths). Only models from the top 95% confidence model set shown (cumulative AIC weight of models $\geqslant$ 0.95).
+```{r echo=F,format = 'markdown'}
+library(knitr)
+columns <- c("Intercept","NDVI","Q","S dep","Tempr","year","df","logLik","AIC","delta","weigth")
+kable(dregdetable, digits=2,row.names=T,col.names=columns,escape=NA)
+
+```
+
+<br/><br/>
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Summary result for model averaging of fixed effects from the 95% confidence model set (cumulative Wi $\geqslant$ 0.95) of of TOC against NDVI, run-off (Q), S deposition, temperature and year.
+```{r  echo=F,format = 'markdown'}
+library(knitr)
+avmodsumm <- as.data.frame(summary(avgmod.95p)[2])
+names(avmodsumm) <- c("Estimate","Sd.Error","adj.SE","-95%CI","+95%CI")
+row.names(avmodsumm) <- c("Intercept","NDVI","Q","S dep.","year","Tempr")
+kable(avmodsumm, digits=2,row.names=T)
+
+```
+
+
+
+**Checking residual structure of final model**
+
+```{r,echo=F,warning=FALSE,message=FALSE,fig.height=6,fig.width=6}
+modpred <- predict(avgmod.95p)
+moderr <- data.std2$lnTOC - modpred
+
+par(mfrow=c(2,2))
+plot(modpred,moderr,xlab="Predicted lnTOC",ylab="Residuals")
+abline(0,0,col="red")
+
+plot(data.std2$lnTOC,modpred,ylim=c(-3,3),xlim=c(-3,3),
+     xlab="Observed TOC",ylab="Predicted TOC")
+abline(0,1,col="red")
+
+# autocorrelations in residuals
+acf.out <- as.numeric()
+lag.out <- as.numeric()
+lnr.out <- as.numeric()
+
+for(i in 1:(length(unique(data.std2$vatn_lnr)))) #rep for unique no. lakes
+{
+  acf.list <- acf( 
+  as.ts(moderr[data.std2$vatn_lnr == unique(data.std2$vatn_lnr)[i]]),  
+  lag.max = 15, 
+  na.action = na.pass,
+  type = c("correlation"),plot=F)
+  
+acf2 <- as.numeric(acf.list$acf)
+lag2 <- as.numeric(acf.list$lag)
+lnr <-  rep(unique(data.std2$vatn_lnr)[i],length(lag2))
+
+acf.out <- append(acf.out, acf2)
+lag.out <- append(lag.out, lag2)
+lnr.out <- append(lnr.out, lnr)
+}
+lcnt <- as.data.frame(cbind(acf.out, lag.out, lnr.out))
+
+plot(lcnt$lag.out,lcnt$acf.out,xlab="lag",ylab="acf")
+abline(h=0.45,col="red")
+abline(h=-0.45,col="red") # red line indicates signifcant corralations for indidvidual 
+
+# spatial pattern of residuals 
+library(ggplot2)
+library(sp)
+library(raster)
+library(rgeos)
+
+setwd(working_dir)
+coordinates <- read.table("S5_position_of_lakes_inLatLong_WGS84.txt",header=T)
+mean_err <- as.data.frame( aggregate(moderr,by=list(data.std2$vatn_lnr),FUN=mean))
+names(mean_err) <- c("vatn_lnr","moderr")
+plot.data <- merge(mean_err,coordinates)
+xy <- plot.data[c("x_coordWGS", "y_coordWGS")]
+mean_err_latlong <- SpatialPointsDataFrame(coords=xy, data=mean_err, proj4string=CRS("+proj=longlat +datum=WGS84"))
+# transform to UTM33 for visualization purposes
+mean_err.SPDF <- spTransform(mean_err_latlong, CRS("+init=epsg:32633"))
+
+
+# fit variogram 
+library(geoR)
+coords <- coordinates(mean_err.SPDF)
+error <- mean_err.SPDF@data$moderr
+#summary(dist(coords))
+breaks = seq(0, 1764000, l = 20)
+v1 <- variog(coords=coords,data=error,breaks=breaks,messages = F)
+plot(v1, type = "b") 
+
+
+```
+
+**Figure S`r figgs[1]``r figgs<-figgs[2:length(figgs)]`: Residual plot of final model.** Plotting predicted values for lnTOC against residuals from averaged modell (upper left pannel), observed against predicted lnTOC (upper rigth pannel), autocorrelation function (acf) for residuals (lower left pannel) and semivariogram for residuals (lower rigth pannel). Values are on standarized scale.Note pattern in residuals with a cluster of values in the lower end of the TOC scale (upper rigth pannels). Those are adressed below.  
+
+<br/ ><br/ >
+
+**Rerunning model exluding outliers**
+
+Outliers identified in residual plots (see above, standarized lnTOC < -2.5). The outliers are clusters of low TOC values. We have no knowlegde about potential causes for the outliers, and hence no a priori reason for exluding them from the analyses. One potential hypoteshis is, however, that this results from TOC beeing close to the detection limits of the instruments. We consecvently rerun the model selection process without these datapoints to check for influence. Although the relative importance of NDVI became sligtly lower, the main results of the model selection is similar, albeith a sligthly lower relative importance of NDVI. Hence, our conclution is that these outliers don't have any significant effect of our overall conclutions.  
+
+
+**Reanalysing (R-code)**
+```{r,echo=T,warning=FALSE,message=FALSE}
+library(nlme)
+library(MuMIn)
+
+f1 <- formula(lnTOC ~ ndvi.summer_lag1 + q.summer_lag1 + sdep_pred + tm.summer+year) 
+
+# re-running model exluding outliers
+m1subset <- lme(f1, data = data.std2, random= ~ year | as.factor(vatn_lnr),method="ML",na.action = na.fail,subset=lnTOC>-2.5)  
+
+dregde_mod_subset <- dredge(m1subset,rank="AIC") 
+avgmod.95p.subset <- model.avg(dregde_mod_subset, cumsum(weight) <= .95,fit=T)
+dregdetable <- subset(dregde_mod_subset, cumsum(weight) <= .95)
+````
+
+
+<br/ ><br/ >
+
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Model selection tables model re-run without outliers. (TOC against NDVI, run-off (Q), S deposition, temperature and year). The tables show parameter estimates for model terms included in the models, log likelihood (LogLik), AIC, AIC difference from best model (delta), and Akaike weigths (weigths). Only models from the top 95% confidence model set shown (cumulative AIC weight of models $\geqslant$ 0.95).
+```{r echo=F,format = 'markdown'}
+library(knitr)
+columns <- c("Intercept","NDVI","Q","S dep","Tempr","year","df","logLik","AIC","delta","weigth")
+kable(dregdetable, digits=2,row.names=T,col.names=columns,escape=NA)
+
+```
+
+<br/ ><br/ >
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Summary result for model averaging of (model re-run without outliers) fixed effects from the 95% confidence model set (cumulative Wi $\geqslant$ 0.95) of of TOC against NDVI, run-off (Q), S deposition, temperature and year.
+```{r  echo=F,format = 'markdown'}
+library(knitr)
+avmodsumm <- as.data.frame(summary(avgmod.95p)[2])
+names(avmodsumm) <- c("Estimate","Sd.Error","adj.SE","-95%CI","+95%CI")
+row.names(avmodsumm) <- c("Intercept","NDVI","Q","S dep.","year","Tempr")
+kable(avmodsumm, digits=2,row.names=T)
+
+```
+
+### Re-running model selection with different time lags for NDVI and run-off(Q)
+We  performed sensitivity analyses on the effect of chosing of time-lag  by re-running the final model with different time-lags. Model selection was run through all combinations of NDVI and runoff(Q) lags from 0 to 5, and the relative importance of NDVI in the model recorded.  The main predictions were mainly insensitive to choice of time-lag, and hence only 1 year time lags are presented in the results of the main text. S deposition and temperature where entered without time lags.
+
+```{r,echo=F,warning=FALSE,message=FALSE,fig.height=5,fig.width=5}
+par(mfrow=c(1,1))
+relimp_ndvi <- numeric()
+relimp_q <- numeric()
+AIC <- numeric()
+lag_ndvi <- rep(c(5:0),6)
+lag_q <- sort(rep(c(0:5),6))
+data.std2$ndvi.summer_lag0 <- data.std2$ndvi.summer
+data.std2$q.summer_lag0 <- data.std2$q.summer
+
+for(i in 1:length(lag_ndvi))
+  {
+    
+  modell <- formula(paste ("lnTOC","~","ndvi.summer_lag",lag_ndvi[i],"+","q.summer_lag"
+                           ,lag_q[i],"+","sdep_pred","+","year",sep = "", collapse = NULL))
+
+  m_ndvi <- lme(modell, data = data.std2, random= ~ year | as.factor(vatn_lnr),method="ML",na.action = na.fail)   
+
+  dregde_mod2 <- dredge(m_ndvi,rank="AIC") 
+  avgmod.95p <- model.avg(dregde_mod2, AIC>2,fit=F)
+  
+  relimp_ndvi[i] <- avgmod.95p$importance[paste("ndvi.summer_lag",lag_ndvi[i],sep="")]
+  relimp_q[i] <- avgmod.95p$importance[paste("q.summer_lag",lag_q[i],sep="")]
+  }
+
+library(akima)
+zz <- interp(lag_ndvi,lag_q,relimp_ndvi,xo=c(0:5),yo=c(0:5))
+image(zz,col=terrain.colors(10, alpha = 0.7),xlab="NDVI time-lag",ylab="Q time-lag")
+```
+
+**Figure S`r figgs[1]``r figgs<-figgs[2:length(figgs)]`: Visual presentation of support for NDVI effect using different time lags for NDVI and run-off.** The effect of different time-lags on the relative importance of NDVI visualized by plotting the relative importance of NDVI along different time lags of run-off (Q) and NDVI. Range in relative importance is from 0.22 (dark green) to 0.99 (red). All time-lag combinations investigated included NDVI in the top ranked models (delta AIC < 2).
+
+### Substituting S deposition with SO4
+
+We then illustrate the effect of substituting SO4 with NDVI in the original model. No major differences on model selection results by subtituting S deposition with SO4 measured in water. NDVI had for all practical purposes the same importance as in the orignal model using S deposition model. Hence, the two explanatory variables (S deposition and SO4) yielded comparable results with respect to model output.  
+ 
+**analyses (R-code):**
+```{r,echo=T,warning=FALSE,message=FALSE}
+library(nlme)
+library(MuMIn)
+
+f1 <- formula(lnTOC ~ ndvi.summer_lag1 + q.summer_lag1 + SO4 + tm.summer+year) 
+
+m1subset <- lme(f1, data = data.std2, random= ~ year | as.factor(vatn_lnr), 
+          method="ML",na.action = na.fail)  
+
+dregde_mod_subset <- dredge(m1subset,rank="AIC") 
+avgmod.95p.subset <- model.avg(dregde_mod_subset, cumsum(weight) <= .95,fit=T)
+dregdetable <- subset(dregde_mod_subset, cumsum(weight) <= .95)
+
+````
+
+
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Model selection tables model on re-run substituting S deposition with SO4. (TOC against NDVI, run-off (Q), SO4, temperature and year). The tables show parameter estimates for model terms included in the models, log likelihood (LogLik), AIC, AIC difference from best model (delta), and Akaike weigths (weigths). Only models from the top 95% confidence model set shown (cumulative AIC weight of models $\geqslant$ 0.95).
+```{r echo=F,format = 'markdown'}
+library(knitr)
+columns <- c("Intercept","NDVI","Q","S dep","Tempr","year","df","logLik","AIC","delta","weigth")
+kable(dregdetable, digits=2,row.names=T,col.names=columns,escape=NA)
+
+```
+
+
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Summary result for model averaging of (model re-run with S deposition substituted with SO4) fixed effects from the 95% confidence model set (cumulative Wi $\geqslant$ 0.95) of of TOC against NDVI, run-off (Q), SO4, temperature and year.
+```{r  echo=F,format = 'markdown'}
+library(knitr)
+avmodsumm <- as.data.frame(summary(avgmod.95p)[2])
+names(avmodsumm) <- c("Estimate","Sd.Error","adj.SE","-95%CI","+95%CI")
+row.names(avmodsumm) <- c("Intercept","Q","SO4","year","NDVI")
+kable(avmodsumm, digits=2,row.names=T)
+
+```
+
+
+***
+
+# D) Trend analyses
+
+In this part of the supplementary, we investigated for the relative correspondence between the temporal trends in lake TOC and catchment drivers by using the Theil-Sen's slopes for lake TOC  as dependent variable and slopes for mean catchment specific NDVI, run-off, atmospheric S deposition as explanatory variables using generalized least-squares (gls). We also tested for the inclusion of spatial autocorrelation structure comparing models with and without (fitted by REML) using Akaike's information criterion (AIC) (Zuur et al. 2009). However, no support for inclusion of a spatial autocorrelation was apparent (???AIC > 4.00 in support of model without spatial autocorrelation). The the tests is also repeated using relative trends (% change), as well as absolute change for sensitivity puroposes. We additionally present analyses where S deposition where substituted with SO4 as dependent variable, and finally re-run with trends expressed as percent change instead of slopes.
+
+
+### Trends (Theil-Sen's slopes) and S deposition as predictor
+
+```{r,warning=FALSE,message=FALSE,echo=F,results='hide'}
+setwd(working_dir)
+source("Slope_estimation.r")
+library(MuMIn)
+library(nlme)
+
+f1 <- formula(lnTOC~sdep+ndvi.summer+tm.summer+q.summer)
+
+# Testing for spatial autocorrelation structure 
+m_spat0 <- gls(f1,data=sen.data,na.action=na.fail)
+m_spat1 <- gls(f1,correlation=corGaus(form=~x_coordWGS+y_coordWGS,nugget=T),data=sen.data,na.action=na.fail)
+m_spat2 <- gls(f1,correlation=corRatio(form=~x_coordWGS+y_coordWGS,nugget=T),data=sen.data,na.action=na.fail)
+m_spat3 <- gls(f1,correlation=corExp(form=~x_coordWGS+y_coordWGS,nugget=T),data=sen.data,na.action=na.fail)
+m_spat4 <- gls(f1,correlation=corSpher(form=~x_coordWGS+y_coordWGS,nugget=T),data=sen.data,na.action=na.fail)
+
+# No spatial correlation structur provide best fit 
+AIC(m_spat0,m_spat1,m_spat2,m_spat3,m_spat4)
+
+# refitting and run model comparison
+m1 <- gls(f1,data=sen.data,na.action=na.fail,method="ML")
+dregde_1 <- dredge(m1,rank="AIC") 
+dregdetable <- subset(dregde_1, cumsum(weight) <= .95)
+
+avgmod.95p <- model.avg(dregde_1, cumsum(weight) <= .95,fit=T)
+
+```
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Model selection tables for slopes of TOC against NDVI, run-off (Q) S dep. and temperature. The tables show parameter estimates for model terms included in the models, log likelihood (LogLik), AIC, AIC difference from best model (delta), and Akaike weigths (weigths). Only models from the top 95% confidence model set shown (cumulative AIC weight of models $\geqslant$ 0.95).
+```{r kable, echo=F,format = 'markdown'}
+library(knitr)
+avmodsumm <- as.data.frame(summary(avgmod.95p)[2])
+names(avmodsumm) <- c("Estimate","Sd.Error","adj.SE","-95%CI","+95%CI")
+row.names(avmodsumm) <- c("Intercept","S dep.","NDVI","Q","Tempr")
+
+columns <- c("Intercept","NDVI","Q","S dep","Tempr","df","logLik","AIC","delta","weigth")
+kable(dregdetable, digits=2,row.names=T,col.names=columns,escape=NA)
+
+```
+
+
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Model selection tables for slopes of TOC against NDVI, run-off (Q) S dep. and temperature. The tables show parameter estimates for model terms included in the models, log likelihood (LogLik), AIC, AIC difference from best model (delta), and Akaike weigths (weigths). Only models from the top 95% confidence model set shown (cumulative AIC weight of models $\geqslant$ 0.95).
+```{r kable2, echo=F,format = 'markdown'}
+library(knitr)
+kable(avmodsumm, digits=2,row.names=T)
+
+```
+
+
+### Using trends (Theil-Sen's slopes) but with measured SO4 in lake water samples as predictor
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE,results='hide'}
+# Testing for spatial autocorrelation structure 
+f1 <- formula(lnTOC~SO4+ndvi.summer+tm.summer+q.summer)
+m_spat0 <- gls(f1,data=sen.data,na.action=na.fail)
+m_spat1 <- gls(f1,correlation=corGaus(form=~x_coordWGS+y_coordWGS,nugget=T),data=sen.data,na.action=na.fail)
+m_spat2 <- gls(f1,correlation=corRatio(form=~x_coordWGS+y_coordWGS,nugget=T),data=sen.data,na.action=na.fail)
+m_spat3 <- gls(f1,correlation=corExp(form=~x_coordWGS+y_coordWGS,nugget=T),data=sen.data,na.action=na.fail)
+m_spat4 <- gls(f1,correlation=corSpher(form=~x_coordWGS+y_coordWGS,nugget=T),data=sen.data,na.action=na.fail)
+
+# Gausian correlation structure provide best fit 
+AIC(m_spat0,m_spat1,m_spat2,m_spat3,m_spat4)
+
+# refitting and run model comparison
+m1 <- gls(f1,correlation=corRatio(form=~x_coordWGS+y_coordWGS,nugget=TRUE),data=sen.data,na.action=na.fail,method="ML")
+
+dregde_1 <- dredge(m1,rank="AIC") 
+dregdetable <- subset(dregde_1, cumsum(weight) <= .95)
+avgmod.95p <- model.avg(dregde_1, cumsum(weight) <= .95,fit=T)
+
+```
+
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Model selection tables for slopes of TOC against NDVI, run-off (Q), SO4 and temperature. The tables show parameter estimates for model terms included in the models, log likelihood (LogLik), AIC, AIC difference from best model (delta), and Akaike weigths (weigths). Only models from the top 95% confidence model set shown (cumulative AIC weight of models $\geqslant$ 0.95).
+```{r echo=F,format = 'markdown'}
+library(knitr)
+columns <- c("Intercept","NDVI","Q","SO4","Tempr","df","logLik","AIC","delta","weigth")
+kable(dregdetable, digits=2,row.names=T,col.names = columns)
+
+```
+
+
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Summary result for model averaging of fixed effects from the 95% confidence model set (cumulative Wi $\geqslant$ 0.95) of slopes of TOC against NDVI, run-off (Q), SO4 and temperature.
+```{r  echo=F,format = 'markdown'}
+library(knitr)
+avmodsumm <- as.data.frame(summary(avgmod.95p)[2])
+names(avmodsumm) <- c("Estimate","Sd.Error","adj.SE","-95%CI","+95%CI")
+row.names(avmodsumm) <- c("Intercept","SO4.","NDVI","Q","Tempr")
+
+columns <- c("Intercept","NDVI","Q","SO4","Tempr","df","logLik","AIC","delta","weigth")
+kable(avmodsumm, digits=2,row.names=T)
+
+```
+
+
+### Using relative slopes (% change) with S dep as driver
+
+**Figure S`r figgs[1]``r figgs<-figgs[2:length(figgs)]`:** Percent change of TOC, NDVI, SO4, Cl, runoff, S deposition and temperature where the colour intensity of the points (red is negative and blue is positive) indicate the relative strength of the trend 
+```{r, warning=FALSE,message=FALSE,echo=F,fig.height=15, fig.width=15}
+library(ggplot2)
+library(sp)
+library(raster)
+library(rgeos)
+
+
+setwd(working_dir)
+# make sen.data a spatial file (WGS84)
+#coordinates <- read.table("S5_position_of_lakes_inLatLong_WGS84.txt",header=T)
+plot.data <- sen.data
+xy <- plot.data[c("x_coordWGS", "y_coordWGS")]
+sen.data.SPDF_latlong <- SpatialPointsDataFrame(coords=xy, data=sen.data, proj4string=CRS("+proj=longlat +datum=WGS84"))
+# transform to UTM33 for visualization purposes
+sen.data.SPDF <- spTransform(sen.data.SPDF_latlong, CRS("+init=epsg:32633"))
+
+
+# get underlying map of Norway for illustative purposes
+no <- getData('GADM', country="NOR", level=0) #raster data, format SpatialPolygonsDataFrame
+
+
+no <- gSimplify(no, tol=0.01, topologyPreserve=TRUE)
+noUTM33 <- spTransform(no, CRS("+init=epsg:32633"))
+spl.no <- list("sp.lines", as(noUTM33, "SpatialLines"))
+
+variables.to.plot <- c("percTOC","perc.ndvi.summer","perc.SO4","perc.q.summer","perc.sdep","perc.tm.summer")
+sen.data.SPDF@data <- sen.data.SPDF@data[variables.to.plot]
+names(sen.data.SPDF@data) <- c("TOC","NDVI","SO4","runoff","S_deposition","Temperature")
+
+cut.vec <- quantile(as.matrix(sen.data.SPDF@data),prob=c(seq(from=0,to=1,length.out=40)))
+cut.vec <- round(as.numeric(cut.vec),3)
+
+#windows()
+spplot(sen.data.SPDF,c("NDVI","S_deposition","runoff","TOC","SO4","Temperature"),sp.layout=spl.no,cex=1.8,cuts=cut.vec, scales=list(draw=F),col.regions=colorRampPalette(c('red', 'gray80','blue'))(5),key.space = "right", as.table = TRUE,main="Percent change") 
+
+```
+
+
+
+
+```{r,warning=FALSE,message=FALSE,echo=F,results='hide'}
+# Analysing trends using relative slope (% change) (R-code):
+library(nlme)
+library(MuMIn)
+
+# importing percent change data
+datainn <- sen.data[c("percTOC","perc.sdep","perc.ndvi.summer","perc.tm.summer","perc.q.summer")]
+#datainn <- as.data.frame(scale(datainn, center = TRUE, scale = TRUE))
+datainn$x_coordWGS <- sen.data$x_coordWGS
+datainn$y_coordWGS <- sen.data$y_coordWGS
+
+# Testing for spatial autocorrelation structure 
+f1 <- formula(percTOC~perc.sdep+perc.ndvi.summer+perc.tm.summer+perc.q.summer)
+m_spat0 <- gls(f1,data=datainn,na.action=na.fail)
+m_spat1 <- gls(f1,correlation=corGaus(form=~x_coordWGS+y_coordWGS,nugget=T),data=datainn,na.action=na.fail)
+m_spat2 <- gls(f1,correlation=corRatio(form=~x_coordWGS+y_coordWGS,nugget=T),data=datainn,na.action=na.fail)
+#m_spat3 <- gls(f1,correlation=corExp(form=~x_coordWGS+y_coordWGS,nugget=T),data=datainn,na.action=na.fail) # does not converge
+m_spat4 <- gls(f1,correlation=corSpher(form=~x_coordWGS+y_coordWGS,nugget=T),data=datainn,na.action=na.fail)
+
+# select spatial autocorrelation structure
+AIC(m_spat0,m_spat1,m_spat2,m_spat4)
+
+# refitt model and run model selection 
+#m1 <- gls(f1,data=datainn,na.action=na.fail,method="ML",correlation=corRatio(form=~x_coordWGS+y_coordWGS,nugget=T))
+m1 <- gls(f1,data=datainn,na.action=na.fail,method="ML")
+
+dregde_1 <- dredge(m1,rank="AIC") 
+dregdetable <- subset(dregde_1, cumsum(weight) <= .95)
+avgmod.95p <- model.avg(dregde_1, cumsum(weight) <= .95,fit=T)
+```
+
+
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Model selection tables for relative slopes (percent change) of TOC against NDVI, run-off (Q), S deposition and temperature. The tables show parameter estimates for model terms included in the models, log likelihood (LogLik), AIC, AIC difference from best model (delta), and Akaike weigths (weigths). Only models from the top 95% confidence model set shown (cumulative AIC weight of models $\geqslant$ 0.95).
+```{r echo=F,format = 'markdown'}
+library(knitr)
+columns <- c("Intercept","NDVI","Q","S dep","Tempr","df","logLik","AIC","delta","weigth")
+kable(dregdetable, digits=2,row.names=T,col.names=columns,escape=NA)
+```
+
+
+
+
+**Table S`r tabbs[1]``r tabbs<-tabbs[2:length(tabbs)]`:** Summary result for model averaging of fixed effects from the 95% confidence model set (cumulative Wi $\geqslant$ 0.95) of slopes (percent change) of TOC against NDVI, run-off (Q), S deposition and temperature.
+```{r  echo=F,format = 'markdown'}
+library(knitr)
+avmodsumm <- as.data.frame(summary(avgmod.95p)[2])
+names(avmodsumm) <- c("Estimate","Sd.Error","adj.SE","-95%CI","+95%CI")
+row.names(avmodsumm) <- c("Intercept","S dep.","Tempr","NDVI","Q")
+kable(avmodsumm, digits=2,row.names=T)
+
+```
+
+
+
