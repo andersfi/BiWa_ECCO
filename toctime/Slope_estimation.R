@@ -20,6 +20,11 @@ data.to_sen$abs_q.summer <- data.to.sen.inn$q.summer
 data.to_sen$abs_sdep <- data.to.sen.inn$sdep_pred
 data.to_sen$abs_Cl <- data.to.sen.inn$Cl
 
+plot(log(data.to_sen$abs_ndvi),log(data.to_sen$abs_TOC))
+
+rainbow(20)
+
+range(data.to_sen$year)
 # create matrix to store output
 setwd(working_dir)
 vatn_lnr_list <- unique(data.to_sen$vatn_lnr)
@@ -132,6 +137,18 @@ sen.data <- merge(sen.data,coordinates)
 # percent of Q slopes beeing negative
 (length((sen.data$q.summer[sen.data$q.summer<0])) / length(sen.data$q.summer))*100
 (length((sen.data$q.summer_p[sen.data$q.summer_p<0.05 & sen.data$q.summer<0])) / length(sen.data$ndvi.summer_p))*100
+
+
+
+plot(sen.data$ndvi.summer,resid(lm(sen.data$lnTOC~sen.data$SO4+sen.data$q.summer+sen.data$tm.summer)))
+abline(h=0,col="red")
+abline(v=0,col="red")
+
+plot(sen.data$SO4,sen.data$lnTOC)
+abline(h=0,col="red")
+abline(v=0,col="red")
+
+
 
 # percent of temperature slopes beeing positive
 (length((sen.data$tm.summer[sen.data$tm.summer>0])) / length(sen.data$tm.summer))*100

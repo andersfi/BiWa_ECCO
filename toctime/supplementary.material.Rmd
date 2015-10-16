@@ -67,6 +67,7 @@ We first tested for overall temporal trends in the time series of lake TOC and e
 
 To test for effects of vegetation development (NDVI) after correcting for other known drivers of TOC, we included effects of mean yearly S deposition, catchment NDVI, runoff, and air temperature as driver variables in a linear mixed effect model with lake TOC as dependent variable using the nlme library (*Pinheiro et al. 2012, nlme: Linear and Nonlinear Mixed Effects Models. R package version 3.1-104*). Year was included in the full model as a controlling variable (*Freckleton 2002, J. Anim. Ecol. 71:542-545*). Selection of random structure where done on a full fixed model structure (fitted by REML) by model comparison (*Zuur et al. 2009, Mixed effects models and extensions in ecology with R. Springer, New York*). This resulted in a full model including lake-ID as random intercept and year nested within lake-ID as random slope (???AIC > -76.65 in favor of the selected random structure). By introducing lake ID as random factor, we model between-lake variation in TOC caused by catchment variables not considered in the current study. For example static land cover properties that not are expected to change on the investigated time frame such as bogs and wetlands, catchment size, lake size. Temporal autocorrelation (AR1) was initially also tried, by entering year nested within lake-ID, but proved redundant in the initial selection of the random structure. There was no signs of multicollinearity (variance inflation factors, all VIF < 1.96, (Zuur et al. 2009) and maximum correlation between predictors where -0.61. 
 
+#### remove figure and move part of the text.... .####################
 Catchment vegetation is expected to influence lake TOC with time lags (see main text). Due to catchment-specific properties such as fractions of alpine areas, forests and bogs, as well as inter-annual variability in climate and runoff, the time-lag between terrestrially fixed C (inferred as NDVI) and export of TOC may vary substantially. Based on visual inspection of cross-correlation plots between the dependent variable (TOC) and time lags of the explanatory variables, it was apparent that NDVI and runoff affected lake TOC with a considerable time lag. In comparison, there were no clear time-lags in the effect of S deposition or temperature. 
 
 ```{r,listoflakes, warning=FALSE,message=FALSE,echo=F,fig.height=5, fig.width=5}
@@ -80,7 +81,7 @@ scatter.smooth(ndvi.cor.agg$lag[ndvi.cor.agg$lag<1],
                ylab="ccf"
                ,span = 0.25,
                col = "green",
-               pch = 19,main="NDVI-TOC ccf",xlim=c(-15,0))
+               pch = 19,main="NDVI-TOC ccf",xlim=c(-10,0))
 
 
 scatter.smooth(cor.agg.sdep$lag[cor.agg.sdep$lag<1], 
@@ -89,16 +90,16 @@ scatter.smooth(cor.agg.sdep$lag[cor.agg.sdep$lag<1],
                ylab="ccf"
                ,span = 0.25,
                col = "blue",
-               pch = 19,main="S dep. -TOC ccf"
+               pch = 19,main="S dep. -TOC ccf",xlim=c(-10,0)
 )
 
 scatter.smooth(cor.agg.q.summer$lag[cor.agg.q.summer$lag<1], 
                cor.agg.q.summer$acf[cor.agg.q.summer$lag<1], 
                xlab="Lag",
-               ylab="acf"
+               ylab="ccf"
                ,span = 0.25,
                col = "blue",
-               pch = 19,main="Q -TOC ccf")
+               pch = 19,main="Q -TOC ccf",xlim=c(-10,0))
 
 scatter.smooth(cor.agg.tm.summer$lag[cor.agg.tm.summer$lag<1], 
                cor.agg.tm.summer$acf[cor.agg.tm.summer$lag<1], 
@@ -106,7 +107,7 @@ scatter.smooth(cor.agg.tm.summer$lag[cor.agg.tm.summer$lag<1],
                ylab="ccf"
                ,span = 0.25,
                col = "blue",
-               pch = 19,main="Temp. - TOC ccf"
+               pch = 19,main="Temp. - TOC ccf",xlim=c(-10,0)
 )
 
 ```
