@@ -15,11 +15,10 @@
 #importing data
 ################
 
-library(repmis)
-data.inn <- source_DropboxData("data.to.analyses.csv",key="zz0wbqa8mrsertg", sep=";", header=T)
-
-coordinates <- source_DropboxData("position_of_NO_lakes_inLatLong_WGS84.csv",key="iu65i9z2ud6bffu", sep=";", header=T)
-catcstat <- source_DropboxData("catchment_static_niva.lakes.csv",key="5gwu2ajpzypk2h5", sep=";", header=T)
+#library(repmis)
+data.inn <- read.csv("data.to.analyses.csv",sep=";")
+coordinates <- read.csv("position_of_NO_lakes_inLatLong_WGS84.csv",sep=";")
+catcstat <- read.csv("catchment_static_niva.lakes.csv",sep=";")
 
 # Subset dataframe on numeric values, standarizing standarize these by sentering on column means dividing on SD, and, exluding missing values. INdex variables are added after scaling.  
 data.to.scale <- data.inn[c("lnCa","Ca","tm.summer","sdep_pred","q.summer","ndvi.summer","SO4",
@@ -66,21 +65,27 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   # Ca
   tempdata <- tempdata.inn[!is.na(tempdata.inn$Ca),]
   rkt.out.temp <- rkt(date=tempdata$year, y=tempdata$Ca)
+    # Ca sen slopes log and not log
   sen.data$Ca[i] <- rkt.out.temp$B
   sen.data$Ca_p[i] <- rkt.out.temp$sl
-  
+  rkt.out.temp <- rkt(date=tempdata$year, y=tempdata$lnCa)
+  sen.data$lnCa[i] <- rkt.out.temp$B
+  sen.data$lnCa_p[i] <- rkt.out.temp$sl
+    # parametric slopes various metrixes
   temppred <- predict(lm(abs_Ca~year,data=tempdata),newdata=list(year=c(1986,2013)))
   sen.data$percCa[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$abs_Ca,na.rm=T))*100
   sen.data$absCa[i] <- temppred[2] - temppred[1]
   sen.data$decedalCa[i] <- ((temppred[2] - temppred[1]) / (2013-1986))*10
   sen.data$percDecedalCa[i] <- ((((temppred[2] - temppred[1]) / (2013-1986))*10) / mean(tempdata$abs_Ca,na.rm=T))*100
   sen.data$meanCa[i] <- mean(tempdata$abs_Ca,na.rm=T)
+  sen.data$Ca2013[i] <- temppred[2] 
+  sen.data$Ca1986[i] <- temppred[1] 
   
   sen.data$bCa[i] <- coef(lm(log(abs_Ca)~year,data=tempdata, na.action = na.omit))[2]
 
-  rkt.out.temp <- rkt(date=tempdata$year, y=tempdata$lnCa)
-  sen.data$lnCa[i] <- rkt.out.temp$B
-  sen.data$lnCa_p[i] <- rkt.out.temp$sl
+  
+  
+    
  
   # ndvi summer 
   tempdata <- tempdata.inn[!is.na(tempdata.inn$ndvi.summer),]
