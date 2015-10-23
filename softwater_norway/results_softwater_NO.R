@@ -111,9 +111,9 @@ table$deltaCaAbs <- round(aggregate(sen.data$decedalCa,by=list(sen.data$vatn_lnr
 table$deltaCaperc <- round(aggregate(sen.data$percDecedalCa,by=list(sen.data$vatn_lnr),FUN=mean,na.rm=T)$x,digits=2)
 listOfLakes <- table
 
-#########################################
-# Mixed effect modelling Ca
-#########################################
+########################################################################################
+# Mixed effect modelling Ca using S dep as predictor as shown in main text of manuscript 
+########################################################################################
 
 # comparing random structure
 library(nlme)
@@ -123,17 +123,13 @@ f1 <- formula(lnCa ~ ndvi.summer_lag4 + q.summer + sdep_pred_lag4 + tm.summer+ye
 m1 <- gls(f1, data = data.std2, na.action = na.fail,method="REML") 
 m2 <- lme(f1, data = data.std2, random= ~1 | as.factor(vatn_lnr),na.action = na.fail,method="REML") 
 m3 <- lme(f1, data = data.std2, random= ~year | as.factor(vatn_lnr),na.action = na.fail,method="REML") 
-
 m4 <- lme(f1, data = data.std2, random= ~ 1 | as.factor(vatn_lnr), 
           corAR1(form = ~ year | as.factor(vatn_lnr)),method="REML",na.action = na.fail) 
+#m5 <- lme(f1, data = data.std2, random= ~ year | as.factor(vatn_lnr), 
+#          corAR1(form = ~ year | as.factor(vatn_lnr)),method="REML",na.action = na.fail) # does not convergre, ditched
 
-m5 <- lme(f1, data = data.std2, random= ~ ndvi.summer_lag4 + sdep_pred_lag5 | as.factor(vatn_lnr),
-          corAR1(form = ~ 1 | as.factor(vatn_lnr)), method="REML",na.action = na.fail) 
 
-m6 <- lme(f1, data = data.std2, random= ~ ndvi.summer_lag4 + year + q.summer | as.factor(vatn_lnr),
-          method="REML",na.action = na.fail) 
-
-AIC(m1,m2,m3,m4,m5,m6)
+AIC(m1,m2,m3,m4)
 
 # selecting fixed structure
 library(nlme)
@@ -142,13 +138,59 @@ library(relaimpo)
 
 f1 <- formula(lnCa ~ ndvi.summer_lag4 + q.summer + sdep_pred_lag5 + tm.summer + year) 
 
-m1 <- lme(f1, data = data.std2, random= ~ ndvi.summer_lag4 + sdep_pred_lag5 | as.factor(vatn_lnr),
-          corAR1(form = ~ 1 | as.factor(vatn_lnr)), method="ML",na.action = na.fail)  
-avgmod.95p <- m1
-dregde_mod <- dredge(m1,rank="AIC") 
+# rerunning best random structure with ML estimator
+m6 <- lme(f1, data = data.std2, random= ~ 1 | as.factor(vatn_lnr),
+          method="ML",na.action = na.fail) 
+#avgmod.95p <- m6
+dregde_mod <- dredge(m6,rank="AIC") 
 dregdetable <- dregde_mod[1:8]
-modelsummary <- summary(m1)
+modelsummary <- summary(m6)
 
 
+##########################################################################################
+# Mixed effect modelling Ca  subsituting SO4 deposition for S deposition  as predictor 
+#########################################################################################
+
+# comparing random structure
+library(nlme)
+
+f1 <- formula(lnCa ~ ndvi.summer_lag4 + q.summer + SO4 + tm.summer+year) 
+
+m1 <- gls(f1, data = data.std2, na.action = na.fail,method="REML") 
+m2 <- lme(f1, data = data.std2, random= ~1 | as.factor(vatn_lnr),na.action = na.fail,method="REML") 
+m3 <- lme(f1, data = data.std2, random= ~year | as.factor(vatn_lnr),na.action = na.fail,method="REML") 
+
+m4 <- lme(f1, data = data.std2, random= ~ 1 | as.factor(vatn_lnr), 
+          corAR1(form = ~ year | as.factor(vatn_lnr)),method="REML",na.action = na.fail) 
+#m5 <- lme(f1, data = data.std2, random= ~ year | as.factor(vatn_lnr), 
+#          corAR1(form = ~ year | as.factor(vatn_lnr)),method="REML",na.action = na.fail) # does not convergre, ditched
+
+AIC(m1,m2,m3,m4)
+
+# selecting fixed structure
+
+f1 <- formula(lnCa ~ ndvi.summer_lag4 + q.summer + SO4 + tm.summer + year) 
+
+# rerunning best random structure with ML estimator
+m6 <- lme(f1, data = data.std2, random= ~ 1 | as.factor(vatn_lnr),
+          method="ML",na.action = na.fail) 
+#avgmod.95p <- m6
+dregde_modSO4 <- dredge(m6,rank="AIC") 
+dregdetableSO4 <- dregde_modSO4[1:8]
+modelsummarySO4 <- summary(m6)
 
 
+#########################################
+# regional Kendall trend test for Ca
+#########################################
+
+# create matrix to store output
+data.to_sen <- data.std2 # change name of dataframe due to lasy programming - recycle of code below
+data.to_sen$year <- data.std2$abs_year 
+data.to_sen <- data.to_sen[data.to_sen$year>1985,]
+
+# regional Kendall trend test on standarized values of ca
+rkt(date=data.to_sen$year,y=data.to_sen$Ca,block=data.to_sen$vatn_lnr)
+
+# regional Kendall trend test on un-standarized values of ca
+rkt(date=data.to_sen$year,y=data.to_sen$abs_Ca,block=data.to_sen$vatn_lnr)

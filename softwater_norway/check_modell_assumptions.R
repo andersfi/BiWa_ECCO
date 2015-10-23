@@ -1,13 +1,15 @@
+
+
 # checking model assumptions 
-modpred <- predict(avgmod.95p)
+modpred <- predict(m6)
 moderr <- data.std2$lnCa - modpred
 
 par(mfrow=c(2,2))
-plot(modpred,moderr,xlab="Predicted lnCa",ylab="Residuals",main="Fig. 5: Predicted TOC vs. model residuals")
+plot(modpred,moderr,xlab="Predicted lnCa",ylab="Residuals",main="")
 abline(0,0,col="red")
 
 plot(data.std2$lnCa,modpred,ylim=c(-3,3),xlim=c(-3,3),
-     xlab="Observed Ca",ylab="Predicted Ca",main="Fig. 6: Observed lnCa vs. predicted Ca")
+     xlab="Observed Ca",ylab="Predicted Ca",main="")
 abline(0,1,col="red")
 
 # autocorrelations in residuals
@@ -33,6 +35,7 @@ for(i in 1:(length(unique(data.std2$vatn_lnr)))) #rep for unique no. lakes
 }
 lcnt <- as.data.frame(cbind(acf.out, lag.out, lnr.out))
 
-plot(lcnt$lag.out,lcnt$acf.out,xlab="lag",ylab="acf",main="Fig. 7: Autocorrelation plot of model residuals")
+plot(lcnt$lag.out,lcnt$acf.out,xlab="lag",ylab="acf",main="")
 abline(h=0.45,col="red")
 abline(h=-0.45,col="red") # red line indicates signifcant corralations for indidvidual observations 
+
