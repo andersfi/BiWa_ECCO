@@ -1,4 +1,4 @@
--- SELECT column_name
+﻿-- SELECT column_name
 -- FROM information_schema.columns
 -- WHERE table_schema = 'public'
 --   AND table_name   = 'ecco_biwa_lake_catchments';
@@ -6,7 +6,7 @@
 -- Codes to CORINE landcover http://sia.eionet.europa.eu/CLC2000/classes
 
 
-create view view_north_euro_lake_surv_with_catchmentdata2 as 
+create view view_output_north_euro_lake_surv_with_catchmentdata as 
 select ST_Area(a.geom) as catchment_area_m, 
        a.ebint,
 a.corine_2000_continuous_urban_fabric_area_km2 as corine2000_111, 
@@ -101,7 +101,7 @@ a.corine_2000_continuous_urban_fabric_area_km2 as corine2000_111,
        a.ndvi_gimms_4km_1993_02_median as ndvi_1993_02,
         a.ndvi_gimms_4km_1993_03_median as ndvi_1993_03,
        a.ndvi_gimms_4km_1993_04_median as ndvi_1993_04,
-       a.ndvi_gimms_4km_1993_05_median as ndvi_1993_05
+       a.ndvi_gimms_4km_1993_05_median as ndvi_1993_05,
        a.ndvi_gimms_4km_1993_06_median as ndvi_1993_06,
        a.ndvi_gimms_4km_1993_07_median as ndvi_1993_07,
        a.ndvi_gimms_4km_1993_08_median as ndvi_1993_08,
@@ -112,7 +112,7 @@ a.corine_2000_continuous_urban_fabric_area_km2 as corine2000_111,
        a.ndvi_gimms_4km_1994_01_median as ndvi_1994_01,
        a.ndvi_gimms_4km_1994_02_median as ndvi_1994_02,
        a.ndvi_gimms_4km_1994_03_median as ndvi_1994_03,
-       a.ndvi_gimms_4km_1994_04_median as ndvi_1994_03,
+       a.ndvi_gimms_4km_1994_04_median as ndvi_1994_04,
        a.ndvi_gimms_4km_1994_05_median as ndvi_1994_05,
        a.ndvi_gimms_4km_1994_06_median as ndvi_1994_06,
        a.ndvi_gimms_4km_1994_07_median as ndvi_1994_07,
@@ -127,7 +127,7 @@ a.corine_2000_continuous_urban_fabric_area_km2 as corine2000_111,
        a.ndvi_gimms_4km_1995_04_median as ndvi_1995_04,
        a.ndvi_gimms_4km_1995_05_median as ndvi_1995_05,
        a.ndvi_gimms_4km_1995_06_median as ndvi_1995_06,
-       a.ndvi_gimms_4km_1995_07_median as ndvi_1995_07
+       a.ndvi_gimms_4km_1995_07_median as ndvi_1995_07,
        a.ndvi_gimms_4km_1995_08_median as ndvi_1995_08,
        a.ndvi_gimms_4km_1995_09_median as ndvi_1995_09,
        a.ndvi_gimms_4km_1995_10_median as ndvi_1995_10,

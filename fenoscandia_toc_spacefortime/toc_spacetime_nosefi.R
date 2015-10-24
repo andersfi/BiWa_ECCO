@@ -8,20 +8,38 @@
 
 library(dplyr)
 library(data.table)
-#Connection using dplyr defining search path; good idea to use read only account for this work
+
+############################################################################################
+#
+# Postgresql connection using dplyr 
+#
+# Source data (temporary.output_north_euro_lake_surv_with_catchmentdata) from the ecco_biwa_db
+# compilatin documented in SQL script within this repository (dplyr appear not to read views).
+# Replace USER with "yourusername" and PSW with "yourpassword". 
+#
+###############################################################################################
 ecco_biwa_db <- src_postgres(dbname="ecco_biwa_db",host="vm-srv-finstad.vm.ntnu.no",
                              user=USER,password=PSW,options = "-c search_path=temporary")
 # read table with catchment data and waterchem
 data.inn <- tbl(ecco_biwa_db,"output_north_euro_lake_surv_with_catchmentdata")
 
-# NDVI (all months) means
-ndvi <- rowMeans(as.data.frame(select(data.inn, starts_with("ndvi"))),na.rm=T)
-# NDVI summer means
-ndvi.summer <- rowMeans(as.data.frame(data.inn %>% select(starts_with("ndvi_")) %>% select(ends_with("06"),ends_with("07"),
+dataout <- as.data.frame(select(data.inn,ebint))
+# NDVI (mean all year, mean summer and max)
+dataout$ndvi <- rowMeans(as.data.frame(select(data.inn, starts_with("ndvi"))),na.rm=T)
+dataout$ndvi.summer <- rowMeans(as.data.frame(data.inn %>% select(starts_with("ndvi_")) %>% 
+                                                select(ends_with("06"),ends_with("07"),
                                                      ends_with("08"),ends_with("09"))),na.rm=T)
-# NDVI (all months) maximum
-ndvi.max <- apply(as.data.frame(data.inn %>% select(starts_with("ndvi"))),1,max,na.rm=T)
+dataout$ndvi.max <- apply(as.data.frame(data.inn %>% select(starts_with("ndvi"))),1,max,na.rm=T)
 
+# Corine: Codes to CORINE landcover http://sia.eionet.europa.eu/CLC2000/classes
+# Proportin of land-cover classes
+dataout$catch_area_m <- as.data.frame(select(data.inn,catchm_area_m))
+dataout$bogs <- as.data.frame(select(data.inn,corine2000_412))
+dataout$waterbody <- rowMeans(as.data.frame(select(data.inn,starts_with("corine2000_5")))) 
+dataout$corine_area <- rowSums(as.data.frame(select(data.inn,starts_with("corine2000")))) 
+dataout$waterbody_pr <- as.data.frame(dataout$waterbody/dataout$catch_area_m)
+
+dataout <- rename(dataout,corine2000_412=bogs)
 
 
 head(garg)
