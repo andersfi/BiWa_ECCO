@@ -38,9 +38,9 @@ fig1 <- spplot(sen.data.SPDF,c("meanCa","Change_Ca_10yr"),
 
 ## fig 3 ############################################################
 sen.data$Ca_2013_below_critical_0.5 <- ifelse(sen.data$Ca2013<0.5,-1,1) # critica limit for D. Magna from http://plankt.oxfordjournals.org/content/22/3/553.full
-sen.data$Ca_2013_below_critical_0.25 <- ifelse(sen.data$Ca2013<1,-1,1) # critica limit different
+sen.data$Ca_2013_below_critical_1 <- ifelse(sen.data$Ca2013<1,-1,1) # critica limit different
 sen.data$Ca_change_to_below_critical_0.5 <- ifelse(sen.data$Ca2013<0.5 & sen.data$Ca1986>0.5,-1,1) # critica limit for D. Magna from http://plankt.oxfordjournals.org/content/22/3/553.full
-sen.data$Ca_change_to_below_critical_0.25 <- ifelse(sen.data$Ca2013<1 & sen.data$Ca1986>1,-1,1) # critica limit different
+sen.data$Ca_change_to_below_critical_1 <- ifelse(sen.data$Ca2013<1 & sen.data$Ca1986>1,-1,1) # critica limit different
 
 plot.data <- sen.data
 xy <- plot.data[c("x_coordWGS", "y_coordWGS")]
@@ -49,17 +49,17 @@ sen.data.SPDF_latlong <- SpatialPointsDataFrame(coords=xy, data=sen.data, proj4s
 sen.data.SPDF <- spTransform(sen.data.SPDF_latlong, CRS("+init=epsg:32633"))
 
 
-variables.to.plot <- c("Ca_2013_below_critical_0.5","Ca_2013_below_critical_0.25",
-                       "Ca_change_to_below_critical_0.5","Ca_change_to_below_critical_0.25")
+variables.to.plot <- c("Ca_2013_below_critical_0.5","Ca_2013_below_critical_1",
+                       "Ca_change_to_below_critical_0.5","Ca_change_to_below_critical_1")
 sen.data.SPDF@data <- sen.data.SPDF@data[variables.to.plot]
-names(sen.data.SPDF@data) <- c("Ca_2013_below_critical_0.5","Ca_2013_below_critical_0.25",
-                               "Ca_change_to_below_critical_0.5","Ca_change_to_below_critical_0.25")
+names(sen.data.SPDF@data) <- c("Ca_2013_below_critical_0.5","Ca_2013_below_critical_1",
+                               "Ca_change_to_below_critical_0.5","Ca_change_to_below_critical_1")
 
 cut.vec <- quantile(as.matrix(sen.data.SPDF@data),prob=c(seq(from=0,to=1,length.out=1)))
 cut.vec <- c(-1,0,1)
 
-fig3 <- spplot(sen.data.SPDF,c("Ca_2013_below_critical_0.5","Ca_2013_below_critical_0.25",
-                               "Ca_change_to_below_critical_0.5","Ca_change_to_below_critical_0.25"),
+fig3 <- spplot(sen.data.SPDF,c("Ca_2013_below_critical_0.5","Ca_2013_below_critical_1",
+                               "Ca_change_to_below_critical_0.5","Ca_change_to_below_critical_1"),
        sp.layout=spl.no,cex=1,cuts=cut.vec, scales=list(draw=F),
        col.regions=colorRampPalette(c('brown','gray80','blue'))(5),
        key.space = "right", as.table = TRUE) 
