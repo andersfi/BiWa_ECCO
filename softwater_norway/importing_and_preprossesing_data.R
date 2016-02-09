@@ -16,18 +16,19 @@
 ################
 
 #library(repmis)
-data.inn <- read.csv("data.to.analyses.csv",sep=";")
+data.inn <- read.csv("data.to.analyses.softwater.csv",sep=",")
 coordinates <- read.csv("position_of_NO_lakes_inLatLong_WGS84.csv",sep=";")
 catcstat <- read.csv("catchment_static_niva.lakes.csv",sep=";")
 
 # Subset dataframe on numeric values, standarizing standarize these by sentering on column means dividing on SD, and, exluding missing values. INdex variables are added after scaling.  
-data.to.scale <- data.inn[c("lnCa","Ca","tm.summer","sdep_pred","q.summer","ndvi.summer","SO4",
+data.to.scale <- data.inn[c("Cl","lnCa","Ca","tm.summer","sdep_pred","q.summer","ndvi.summer","SO4",
                             "ndvi.summer_lag1","ndvi.summer_lag2","ndvi.summer_lag3","ndvi.summer_lag4",
                             "ndvi.summer_lag5","q.summer_lag1","q.summer_lag2","q.summer_lag3","q.summer_lag4","q.summer_lag5","year","sdep_pred_lag1","sdep_pred_lag2","sdep_pred_lag3","sdep_pred_lag4","sdep_pred_lag5","year")]
 data.std <- as.data.frame(scale(data.to.scale, center = TRUE, scale = TRUE))
 #data.std$year <- data.inn$year
 data.std$vatn_lnr <- data.inn$vatn_lnr
 data.std$abs_Ca <- data.inn$Ca
+data.std$abs_Cl <- data.inn$Cl
 data.std$abs_ndvi.summer <- data.inn$ndvi.summer
 data.std$abs_tm.summer <- data.inn$tm.summer
 data.std$abs_q.summer <- data.inn$q.summer
@@ -82,11 +83,25 @@ for(i in 1:length(unique(data.to_sen$vatn_lnr)))
   sen.data$Ca1986[i] <- temppred[1] 
   
   sen.data$bCa[i] <- coef(lm(log(abs_Ca)~year,data=tempdata, na.action = na.omit))[2]
-
-  
-  
-    
+  sen.data$Ca_below0.5_2013 <- ifelse(sen.data$Ca2013<0.5,0,1)
+  sen.data$Ca_below1.0_2013 <- ifelse(sen.data$Ca2013<1,0,1)
+  sen.data$Ca_going_below0.5 <- ifelse(sen.data$Ca1986>0.5 & sen.data$Ca2013<0.5,0,1)
+  sen.data$Ca_going_below1.0 <- ifelse(sen.data$Ca1986>1 & sen.data$Ca2013<1,0,1)  
  
+  # Cl 
+  tempdata <- tempdata.inn[!is.na(tempdata.inn$Cl),]
+  rkt.out.temp <- rkt(date=tempdata$year,y=tempdata$Cl)
+  sen.data$Cl[i] <- rkt.out.temp$B
+  sen.data$Cl_p[i] <- rkt.out.temp$sl
+  
+  temppred <- predict(lm(abs_Cl~year,data=tempdata),newdata=list(year=c(1986,2013)))
+  sen.data$perc.Cl[i] <- ((temppred[2] - temppred[1])/ mean(tempdata$Cl,na.rm=T))*100
+  sen.data$abs.ndvi.summer[i] <- temppred[2] - temppred[1]
+  sen.data$bCl[i] <- coef(lm(log(abs_Cl)~year,data=tempdata, na.action = na.omit))[2]
+  sen.data$Cl[i] <- mean(tempdata$abs_Cl)
+  
+  
+  
   # ndvi summer 
   tempdata <- tempdata.inn[!is.na(tempdata.inn$ndvi.summer),]
   rkt.out.temp <- rkt(date=tempdata$year,y=tempdata$ndvi.summer)
